@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <section id="fullbackground">
+        <div class="container">
+            <div class="firstbg" id="apiimage" onclick="fetchRandomImage()">
+                <div class="heading">
+                    <h3 id="samle-heading">
+                        Sample heading
+                    </h3>
+                </div>
+                <div class="list">
+                    <ol>
+                        <li> Lorem ipsum dolor sit amet consectetur
+                        </li>
+                        <li>
+                            Adipisicing elit tempore dolorem
+                        </li>
+                        <li>
+                            Laborum distinctio incidunt quae voluptas tempore dolorem
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="secondbg">
+                <div class="secondbg-inner-container">
+                    <h3>Create an account</h3>
+                    <form id="myForm">
+                        <section class="group-1">
+                            <label id="email-text">Enter your email</label> <br>
+                            <input class="email-input" id="emailval" type="email" required>
+                            <span id="emailerrormsg"></span>
+                            <p class="date-of-birth">Date of birth (Optional)</p>
+                            <div class="group-2">
+                                <label name="Date of birth (Optional)" for="Date of birth (Optional)"> </label><br>
+                                <div>
+                                    <label id="date" class="date-label">Date</label>
+                                    <input type="number" id="date-input" name="date" min="1" max="31" required>
+                                </div>
+                                <div>
+                                    <label id="month" class="month-label" for="dob_month">Month:</label>
+                                    <select id="dob_month" name="dob_month" class="month-select">
+                                        <option value="January">January</option>
+                                         <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                                        <!-- Add other months -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label id="year" for="dob_year">Year:</label>
+                                    <select id="dob_year" name="dob_year" class="year-select">
+                                        <!-- JavaScript will populate the years -->
+                                    </select>
+                                </div>
+                            </div> <br>
+                            <div class="password">
+                                <label for="" id="password">Choose a strong password</label>
+                                <input name="password" id="passwordval" type="password" pattern="[0-9]*" title="Password should contain only numbers" class="password-input" required>
+
+                                <span id="passerrormsg"></span>
+                            </div>
+                            <div class="radio">
+                                <p class="radio-head"> Are you an agency or individual?</p>
+                                <input type="radio" class="radio-input" name="gender" value="male">
+                                <label id="radio-text" for="individual?"> Individual</label>
+                                <input type="radio" class="radio-input" name="gender" value="male">
+                                <label id="radio-text" for> Agency</label>
+                            </div>
+                            <br>
+                            <br>
+                            <div class="submit">
+                                <button type="submit" id="submit-button">Submit</button>
+                            </div>
+                        </section>
+                    </form>
+                </div>
+                <div id="newimage"></div>
+            </div>
+
+        </div>
+    </section>
+    <script>
+        // JavaScript code to populate years
+        var currentYear = new Date().getFullYear();
+        var startYear = currentYear - 100; // Change this according to your requirement
+        var yearDropdown = document.getElementById("dob_year");
+
+        for (var year = startYear; year <= currentYear; year++) {
+            var option = document.createElement("option");
+            option.text = year;
+            option.value = year;
+            yearDropdown.add(option);
+        }
+
+        // validation for form 
+        document.getElementById("myForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var email = document.getElementById("emailval").value;
+            var password = document.getElementById("passwordval").value;
+            var gender = document.querySelector('input[name="gender"]:checked');
+            var isValidPassword = /^\d+$/.test(password); // Check if password contains only numbers
+            var errorMsg = document.getElementById("passerrormsg");
+
+            // Password validation
+            if (!isValidPassword) {
+                errorMsg.innerHTML = "Password is invalid. Please enter only numbers.";
+                errorMsg.style.display = "block";
+                return false;
+            } else {
+                errorMsg.style.display = "none";
+            }
+
+            // Email validation
+            var emailRegex = /^\S+@\S+\.\S+$/; // Regular expression for email validation
+            var emailErrorMsg = document.getElementById("emailerrormsg");
+
+            if (!emailRegex.test(email)) {
+                emailErrorMsg.innerHTML = "Email is invalid. Please enter a valid email address.";
+                emailErrorMsg.style.display = "block";
+                return false;
+            } else {
+                emailErrorMsg.style.display = "none";
+            }
+
+            // Gender validation
+            if (!gender) {
+                alert("Please select your gender.");
+                return false;
+            }
+
+            // If all validation passes, submit the form
+            alert("Form submitted successfully!");
+            this.submit();
+        });
+
+
+
+        // random image will run in every 5 seconds 
+        const apiKey = '0N1eLhvPba4e9OgDHkZpxytbmMxym2Lyq_Zxkw5Tq_g';
+
+        function fetchRandomImage() {
+            fetch(`https://api.unsplash.com/photos/random?client_id=${apiKey}`).then(response => response.json()).then(data => {
+                const imageUrl = data.urls.regular;
+                document.getElementById('apiimage').style.backgroundImage = `url(${imageUrl})`;
+            }).catch(error => console.error('Error fetching random image:', error));
+        } // Fetch a random image when the page loads
+        fetchRandomImage();
+        // Fetch a new random image every 5 seconds //
+        setInterval(fetchRandomImage, 5000);
+    </script>
+</body>
+
+</html>
